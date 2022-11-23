@@ -13,13 +13,18 @@ using Server.Data;
 
 namespace Server
 {
-	public class ClientSession : PacketSession
+	public partial class ClientSession : PacketSession
 	{
+		public PlayerServerState ServerState { get; private set; } = PlayerServerState.ServerStateLogin;
+
 		// 관리하는 내 플레이어
 		public Player MyPlayer { get; set; }
 		public int SessionId { get; set; }
 
-		public void Send(IMessage packet)
+
+
+        #region Network
+        public void Send(IMessage packet)
 		{
 			// packet id 추출
 			string msgName = packet.Descriptor.Name.Replace("_", String.Empty); // '_' 제거한 이름 추출
@@ -88,5 +93,6 @@ namespace Server
 		{
 			//Console.WriteLine($"Transferred bytes: {numOfBytes}");
 		}
-	}
+        #endregion
+    }
 }

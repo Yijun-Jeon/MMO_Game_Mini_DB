@@ -17,6 +17,9 @@ enum MsgId {
   S_CONNECTED = 10;
   C_LOGIN = 11;
   S_LOGIN = 12;
+  C_ENTER_GAME = 13;
+  C_CREATE_PLAYER = 14;
+  S_CREATE_PLAYER = 15;
 }
 enum CreatureState{
     IDLE = 0;
@@ -43,6 +46,13 @@ enum SkillType{
 	SKILL_NONE = 0;
 	SKILL_AUTO = 1; // 펀치
 	SKILL_PROJECTTILE = 2; // 투사체
+}
+
+// 서버 접속 상태
+enum PlayerServerState{
+	SERVER_STATE_LOGIN = 0;
+	SERVER_STATE_LOBBY = 1;
+	SERVER_STATE_GAME = 2;
 }
 
 message S_EnterGame {
@@ -98,6 +108,27 @@ message C_Login{
 
 message S_Login{
 	int32 loginOk = 1;
+	repeated LobbyPlayerInfo players = 2; // 보유 중인 플레이어들
+}
+
+// 로비에서 플레이어 생성
+message C_CreatePlayer{
+	string name = 1;
+}
+
+// 생성된 플레이어 전송
+message S_CreatePlayer{
+	LobbyPlayerInfo player = 1;
+}
+
+message C_EnterGame{
+	string name = 1; // 플레이어의 이름
+}
+
+// 로비에서만 보이는 플레이어의 정보
+message LobbyPlayerInfo{
+	string name = 1;
+	StatInfo statInfo = 2;
 }
 
 message ObjectInfo{

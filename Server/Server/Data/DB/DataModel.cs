@@ -20,7 +20,18 @@ namespace Server.DB
     {
         public int PlayerDbId { get; set; }
         public string PlayerName { get; set; }
+
         // m:1 관계
+        [ForeignKey("Account")]
+        public int AccountID { get; set; }
         public AccountDb Account { get; set; }
+
+        // StatInfo와 동일하게 Stat 정보
+        public int Level { get; set; }
+        public int Hp { get; set; }
+        public int MaxHp { get; set; }
+        public int Attack { get; set; }
+        public float Speed { get; set; }
+        public int TotalExp { get; set; }
     }
 }

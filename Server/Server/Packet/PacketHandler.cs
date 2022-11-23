@@ -52,36 +52,24 @@ class PacketHandler
 		room.Push(room.HandleSkill, player, skillPacket);
     }
 
-public static void C_LoginHandler(PacketSession session, IMessage packet)
-{
-	C_Login loginPacket = packet as C_Login;
-	ClientSession clientSession = session as ClientSession;
+	public static void C_LoginHandler(PacketSession session, IMessage packet)
+	{
+		C_Login loginPacket = packet as C_Login;
+		ClientSession clientSession = session as ClientSession;
 
-    Console.WriteLine($"UniqueId({loginPacket.UniqueId})");
+		clientSession.HandlerLogin(loginPacket);
+	}
 
-	// TODO : 이런 저런 보안 체크
-
-	// 유효한 아이디인지 확인
-	using (AppDbContext db = new AppDbContext())
+	public static void C_EnterGameHandler(PacketSession session, IMessage packet)
     {
-		AccountDb findAccount = db.Accounts
-			.Where(a => a.AccountName == loginPacket.UniqueId).FirstOrDefault();
-
-		if(findAccount != null)
-        {
-			S_Login loginOk = new S_Login() { LoginOk = 1 };
-			clientSession.Send(loginOk);
-        }
-		else
-        {
-			// 아이디가 없으면 생성해 줌
-			AccountDb newAccount = new AccountDb() { AccountName = loginPacket.UniqueId };
-			db.Accounts.Add(newAccount);
-			db.SaveChanges();
-
-			S_Login loginOk = new S_Login() { LoginOk = 1 };
-			clientSession.Send(loginOk);
-		}
+		C_EnterGame enterGamePacket = packet as C_EnterGame;
+		// 캐스팅이 확실한 경우 사용 가능 - 좀 더 빠름
+		ClientSession clientSession = (ClientSession)session;
     }
-}
+
+	public static void C_CreatePlayerHandler(PacketSession session, IMessage packet)
+	{
+		C_CreatePlayer enterGamePacket = (C_CreatePlayer)packet;
+		ClientSession clientSession = (ClientSession)session;
+	}
 }
