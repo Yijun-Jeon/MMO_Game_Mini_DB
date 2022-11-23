@@ -38,7 +38,13 @@ namespace Server
 		{
 			Console.WriteLine($"OnConnected : {endPoint}");
 
-			// PROTO Test
+            // 클라에게 연결 됐다고 알려줌
+            {
+				S_Connected connectedPacket = new S_Connected();
+				Send(connectedPacket);
+            }
+
+			// TODO : 로비에서 캐릭터 선택
 			MyPlayer = ObjectManager.Instance.Add<Player>();
 			{
 				MyPlayer.Info.Name = $"Player_{MyPlayer.Info.ObjectId}";
@@ -55,6 +61,7 @@ namespace Server
                 MyPlayer.Session = this;
             }
 
+			// TODO : 입장 요청 들어오면
 			// 1번방에 플레이어 입장
 			//RoomManager.Instance.Find(1).EnterGame(MyPlayer);
 			GameRoom room = RoomManager.Instance.Find(1);

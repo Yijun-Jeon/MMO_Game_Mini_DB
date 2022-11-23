@@ -14,6 +14,9 @@ enum MsgId {
   S_SKILL = 7;
   S_CHANGE_HP = 8;
   S_DIE = 9;
+  S_CONNECTED = 10;
+  C_LOGIN = 11;
+  S_LOGIN = 12;
 }
 enum CreatureState{
     IDLE = 0;
@@ -83,6 +86,18 @@ message S_ChangeHp{
 message S_Die{
 	int32 objectId = 1;
 	int32 attackerId = 2;
+}
+
+message S_Connected{
+
+}
+
+message C_Login{
+	string uniqueId = 1;
+}
+
+message S_Login{
+	int32 loginOk = 1;
 }
 
 message ObjectInfo{

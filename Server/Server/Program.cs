@@ -62,12 +62,6 @@ namespace Server
 
 			// DB
 			InitializeDB(forceReset: false);
-			
-			using (AppDbContext db = new AppDbContext())
-            {
-				db.Accounts.Add(new AccountDb() { AccountName = "TestAccount" });
-				db.SaveChanges();
-            }
 
 			// 게임룸 생성
 			GameRoom room = RoomManager.Instance.Add(1);

@@ -107,4 +107,22 @@ class PacketHandler
             cc.OnDead();
         }
     }
+
+    public static void S_ConnectedHandler(PacketSession session, IMessage packet)
+    {
+        Debug.Log("S_ConnectedHandler");
+        C_Login loginPacket = new C_Login();
+        // 시스템 별로 유니크한 아이디 할당해줌
+        // 로컬에서 같은 머신으로 테스트 할 때는 추가 조치 필요
+        loginPacket.UniqueId = SystemInfo.deviceUniqueIdentifier;
+        Managers.Network.Send(loginPacket);
+    }
+
+    public static void S_LoginHandler(PacketSession session, IMessage packet)
+    {
+        S_Login loginPacket = new S_Login();
+        Debug.Log($"LoginOk({loginPacket.LoginOk})");
+    }
+
+
 }
