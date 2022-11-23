@@ -1,0 +1,113 @@
+syntax = "proto3";
+
+package Protocol;
+option csharp_namespace = "Google.Protobuf.Protocol";
+
+enum MsgId {
+  S_ENTER_GAME = 0;
+  S_LEAVE_GAME = 1;
+  S_SPAWN = 2; // 다른 플레이어, 몬스터 스폰
+  S_DESPAWN = 3;
+  C_MOVE = 4;
+  S_MOVE = 5;
+  C_SKILL = 6;
+  S_SKILL = 7;
+  S_CHANGE_HP = 8;
+  S_DIE = 9;
+}
+enum CreatureState{
+    IDLE = 0;
+    MOVING = 1;
+    SKILL = 2;
+	DEAD = 3;
+}
+
+enum MoveDir{
+    UP = 0;
+    DOWN = 1;
+    LEFT = 2;
+    RIGHT = 3;
+}
+
+enum GameObjectType{
+	NONE = 0;
+	PLAYER = 1;
+	MONSTER = 2;
+	PROJECTTILE = 3; // 투사체
+}
+
+enum SkillType{
+	SKILL_NONE = 0;
+	SKILL_AUTO = 1; // 펀치
+	SKILL_PROJECTTILE = 2; // 투사체
+}
+
+message S_EnterGame {
+  ObjectInfo player = 1;
+}
+
+message S_LeaveGame{
+}
+
+message S_Spawn{
+	repeated ObjectInfo objects = 1;
+}
+
+message S_Despawn{
+	repeated int32 objectIds = 1;
+}
+
+message C_Move{
+	PositionInfo posInfo = 1;
+}
+
+message S_Move{
+	int32 objectId = 1;
+	PositionInfo posInfo = 2;
+}
+
+message C_Skill{
+	SkillInfo info = 1;
+}
+
+message S_Skill{
+	int32 objectId = 1;
+	SkillInfo info = 2;
+}
+
+message S_ChangeHp{
+	int32 objectId = 1;
+	int32 hp = 2;
+}
+
+message S_Die{
+	int32 objectId = 1;
+	int32 attackerId = 2;
+}
+
+message ObjectInfo{
+	int32 objectId = 1;
+	string name = 2;
+	PositionInfo posInfo = 3;
+	StatInfo statInfo = 4;
+}
+
+message PositionInfo{
+	CreatureState state = 1;
+	MoveDir moveDir = 2;
+	int32 posX = 3;
+	int32 posY = 4;
+}
+
+message StatInfo{
+	int32 level = 1;
+	int32 hp = 2;
+	int32 maxHp = 3;
+	int32 attack = 4;
+	float speed = 5;
+	int32 totalExp = 6;
+}
+
+message SkillInfo{
+	int32 skillId = 1;
+}

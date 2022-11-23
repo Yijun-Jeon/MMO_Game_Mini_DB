@@ -1,0 +1,24 @@
+{
+  "skills": [
+    {
+      "id": "1",
+      "name": "평타",
+      "cooldown": "0.5",
+      "damage": "10",
+      "skillType": "SkillAuto"
+    },
+    {
+      "id": "2",
+      "name": "화살 공격",
+      "cooldown": "0.5",
+      "damage": "5",
+      "skillType": "SkillProjecttile",
+      "projecttile": {
+        "name": "화살",
+        "speed": "20.0",
+        "range": "10",
+        "prefab":  "Creature/Arrow"
+      }
+    }
+  ]
+} 
