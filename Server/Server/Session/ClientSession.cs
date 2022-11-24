@@ -21,8 +21,6 @@ namespace Server
 		public Player MyPlayer { get; set; }
 		public int SessionId { get; set; }
 
-
-
         #region Network
         public void Send(IMessage packet)
 		{
@@ -48,29 +46,6 @@ namespace Server
 				S_Connected connectedPacket = new S_Connected();
 				Send(connectedPacket);
             }
-
-			// TODO : 로비에서 캐릭터 선택
-			MyPlayer = ObjectManager.Instance.Add<Player>();
-			{
-				MyPlayer.Info.Name = $"Player_{MyPlayer.Info.ObjectId}";
-				MyPlayer.Info.PosInfo.State = CreatureState.Idle;
-				MyPlayer.Info.PosInfo.MoveDir = MoveDir.Down;
-				MyPlayer.Info.PosInfo.PosX = 0;
-				MyPlayer.Info.PosInfo.PosY = 0;
-
-				StatInfo stat = null;
-				DataManager.StatDict.TryGetValue(1, out stat);
-				// 레벨 1의 Stat 정보로 세팅
-				MyPlayer.Stat.MergeFrom(stat);
-
-                MyPlayer.Session = this;
-            }
-
-			// TODO : 입장 요청 들어오면
-			// 1번방에 플레이어 입장
-			//RoomManager.Instance.Find(1).EnterGame(MyPlayer);
-			GameRoom room = RoomManager.Instance.Find(1);
-			room.Push(room.EnterGame, MyPlayer);
 		}
 
 		public override void OnRecvPacket(ArraySegment<byte> buffer)

@@ -57,7 +57,7 @@ class PacketHandler
 		C_Login loginPacket = packet as C_Login;
 		ClientSession clientSession = session as ClientSession;
 
-		clientSession.HandlerLogin(loginPacket);
+		clientSession.HandleLogin(loginPacket);
 	}
 
 	public static void C_EnterGameHandler(PacketSession session, IMessage packet)
@@ -65,11 +65,16 @@ class PacketHandler
 		C_EnterGame enterGamePacket = packet as C_EnterGame;
 		// 캐스팅이 확실한 경우 사용 가능 - 좀 더 빠름
 		ClientSession clientSession = (ClientSession)session;
-    }
+
+		clientSession.HandleEnterGame(enterGamePacket);
+
+	}
 
 	public static void C_CreatePlayerHandler(PacketSession session, IMessage packet)
 	{
-		C_CreatePlayer enterGamePacket = (C_CreatePlayer)packet;
+		C_CreatePlayer createPlayerPacket = (C_CreatePlayer)packet;
 		ClientSession clientSession = (ClientSession)session;
+
+		clientSession.HandleCreatePlayer(createPlayerPacket);
 	}
 }

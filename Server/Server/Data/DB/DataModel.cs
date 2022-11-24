@@ -23,7 +23,7 @@ namespace Server.DB
 
         // m:1 관계
         [ForeignKey("Account")]
-        public int AccountID { get; set; }
+        public int AccountDbId { get; set; }
         public AccountDb Account { get; set; }
 
         // StatInfo와 동일하게 Stat 정보
