@@ -12,6 +12,7 @@ using Google.Protobuf.WellKnownTypes;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using Server.Data;
+using Server.Data.DB;
 using Server.DB;
 using Server.Game;
 using ServerCore;
@@ -80,11 +81,10 @@ namespace Server
             //FlushRoom();
             //JobTimer.Instance.Push(FlushRoom);
 
-            // 일단 무식하게 무한루프로 Update 검사
             while (true)
 			{
-				//JobTimer.Instance.Flush();
-				Thread.Sleep(100);
+				// 일단 무식하게 무한루프로 Flush
+				DbTransaction.Instance.Flush();
 			}
 		}
 	}
