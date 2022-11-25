@@ -43,6 +43,7 @@ namespace Server
                     {
 						LobbyPlayerInfo lobbyPlayer = new LobbyPlayerInfo()
 						{
+							PlayerDbId = playerDb.PlayerDbId,
 							Name = playerDb.PlayerName,
 							StatInfo = new StatInfo()
 							{
@@ -71,7 +72,9 @@ namespace Server
 					// 아이디가 없으면 생성해 줌
 					AccountDb newAccount = new AccountDb() { AccountName = loginPacket.UniqueId };
 					db.Accounts.Add(newAccount);
-					db.SaveChanges(); // TODO : Exception
+					bool success = db.SaveChangesEx();
+					if (success == false)
+						return;
 
 					// AccountDbId 메모리에 기억
 					AccountDbId = newAccount.AccountDbId;
@@ -121,10 +124,14 @@ namespace Server
 						AccountDbId = AccountDbId,
 					};
 					db.Players.Add(newPlayerDb);
-					db.SaveChanges(); // TODO : ExceptionHandling
+					// ExceptionHandling
+					bool success = db.SaveChangesEx();
+					if (success == false)
+						return;
 
 					LobbyPlayerInfo lobbyPlayer = new LobbyPlayerInfo()
 					{
+						PlayerDbId = newPlayerDb.PlayerDbId,
 						Name = createPacket.Name,
 						StatInfo = new StatInfo()
 						{
@@ -162,6 +169,7 @@ namespace Server
 			// 기존 입장 & MyPlayer setting 부분
 			MyPlayer = ObjectManager.Instance.Add<Player>();
 			{
+				MyPlayer.PlayerDbId = playerInfo.PlayerDbId;
 				MyPlayer.Info.Name = playerInfo.Name;
 				MyPlayer.Info.PosInfo.State = CreatureState.Idle;
 				MyPlayer.Info.PosInfo.MoveDir = MoveDir.Down;

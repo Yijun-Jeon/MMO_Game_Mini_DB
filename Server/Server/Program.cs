@@ -61,7 +61,7 @@ namespace Server
 			var d = DataManager.StatDict;
 
 			// DB
-			InitializeDB(forceReset: true);
+			InitializeDB(forceReset: false);
 
 			// 게임룸 생성
 			GameRoom room = RoomManager.Instance.Add(1);
