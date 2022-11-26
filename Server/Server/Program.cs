@@ -45,6 +45,25 @@ namespace Server
 			{
 				// 강제 Reset이 아니고
 				// 만약 DB가 이미 만들어져 있다면
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 				if (!forceReset && (db.GetService<IDatabaseCreator>() as RelationalDatabaseCreator).Exists())
 					return;
 

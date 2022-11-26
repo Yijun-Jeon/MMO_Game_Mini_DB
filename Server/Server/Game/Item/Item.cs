@@ -29,6 +29,12 @@ namespace Server.Game
             set { Info.Count = value; }
         }
 
+        public int Slot
+        {
+            get { return Info.Slot; }
+            set { Info.Slot = value; }
+        }
+
         public ItemType ItemType { get; private set; }
         // 아이템이 겹칠 수 있는지
         public bool Stackable { get; protected set; }
@@ -64,6 +70,7 @@ namespace Server.Game
             {
                 item.ItemDbId = itemDb.ItemDbId;
                 item.Count = itemDb.Count;
+                item.Slot = itemDb.Slot;
             }
 
             return item;
