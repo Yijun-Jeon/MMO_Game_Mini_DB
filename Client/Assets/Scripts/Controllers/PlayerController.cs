@@ -23,7 +23,7 @@ public class PlayerController : CreatureController
 			switch (Dir)
 			{
 				case MoveDir.Up:
-					_animator.Play("IDLE_BA,CK");
+					_animator.Play("IDLE_BACK");
 					_sprite.flipX = false;
 					break;
 				case MoveDir.Down:

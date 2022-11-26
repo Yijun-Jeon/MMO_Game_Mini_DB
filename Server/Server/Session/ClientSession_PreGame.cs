@@ -166,6 +166,7 @@ namespace Server
 			if (playerInfo == null)
 				return;
 
+			S_ItemList itemListPacket = new S_ItemList();
 			// 기존 입장 & MyPlayer setting 부분
 			MyPlayer = ObjectManager.Instance.Add<Player>();
 			{
@@ -177,6 +178,31 @@ namespace Server
 				MyPlayer.Info.PosInfo.PosY = 0;
 				MyPlayer.Stat.MergeFrom(playerInfo.StatInfo);
 				MyPlayer.Session = this;
+
+				// 아이템 목록을 갖고 옴
+				using (AppDbContext db = new AppDbContext())
+				{
+					List<ItemDb> items = db.Items
+						.Where(i => i.OwnerDbId == playerInfo.PlayerDbId)
+						.ToList();
+
+					foreach(ItemDb itemDb in items)
+                    {
+						// 메모리 인벤토리
+						Item item = Item.MakeItem(itemDb);
+						if(item != null)
+                        {
+							MyPlayer.Inven.Add(item);
+
+							// 클라 인벤토리
+							ItemInfo info = new ItemInfo();
+							info.MergeFrom(item.Info);
+							itemListPacket.Items.Add(info);
+						}
+                    }
+				}
+				// 클라에게 아이템 목록 전달
+				Send(itemListPacket);
 			}
 
 			ServerState = PlayerServerState.ServerStateGame;

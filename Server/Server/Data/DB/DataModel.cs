@@ -26,6 +26,9 @@ namespace Server.DB
         public int AccountDbId { get; set; }
         public AccountDb Account { get; set; }
 
+        // 1:m 관계
+        public ICollection<ItemDb> Items { get; set; }
+
         // StatInfo와 동일하게 Stat 정보
         public int Level { get; set; }
         public int Hp { get; set; }
@@ -33,5 +36,19 @@ namespace Server.DB
         public int Attack { get; set; }
         public float Speed { get; set; }
         public int TotalExp { get; set; }
+    }
+
+    [Table("Item")]
+    public class ItemDb
+    {
+        public int ItemDbId { get; set; }
+        public int TemplateId { get; set; } // 아이템 구분 Id
+        public int Count { get; set; } // 보유 수
+        // ex) 0~10 : 착용중인 아이템, 11~40 : 보유중인 아이템, 40~ :창고에 있는 아이템...
+        public int Slot { get; set; } // 인벤토리 슬롯 넘버
+
+        [ForeignKey("Owner")]
+        public int? OwnerDbId { get; set; }
+        public PlayerDb Owner { get; set; }
     }
 }

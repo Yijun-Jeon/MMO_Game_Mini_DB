@@ -25,7 +25,7 @@ namespace Server.Data
     }
     #endregion
 
-    #region
+    #region Skill
     [Serializable]
     public class Skill
     {
@@ -60,6 +60,66 @@ namespace Server.Data
             Dictionary<int, Skill> dict = new Dictionary<int, Skill>();
             foreach (Skill skill in skills)
                 dict.Add(skill.id, skill);
+            return dict;
+        }
+    }
+    #endregion
+
+    #region
+    [Serializable]
+    public class ItemData
+    {
+        // template id
+        public int id;
+        // 다국적 지원일 경우 언어에 맞게 언어 Id도 존재해야 함
+        public string name;
+        public ItemType itemType;
+    }
+
+    public class WeaponData : ItemData
+    {
+        public WeaponType weaponType;
+        public int damage;
+    }
+
+    public class ArmorData : ItemData
+    {
+        public ArmorType armorType;
+        public int defence;
+    }
+
+    public class ConsumableData : ItemData
+    {
+        public ConsumableType consumableType;
+        public int maxCount;
+    }
+
+    // Item 로더
+    [Serializable]
+    public class ItemLoader : ILoader<int, ItemData>
+    {
+        public List<WeaponData> weapons = new List<WeaponData>();
+        public List<ArmorData> armors = new List<ArmorData>();
+        public List<ConsumableData> consumables = new List<ConsumableData>();
+
+        public Dictionary<int, ItemData> MakeDict()
+        {
+            Dictionary<int, ItemData> dict = new Dictionary<int, ItemData>();
+            foreach (ItemData item in weapons)
+            {
+                item.itemType = ItemType.Weapon;
+                dict.Add(item.id,item);
+            }
+            foreach (ItemData item in armors)
+            {
+                item.itemType = ItemType.Armor;
+                dict.Add(item.id, item);
+            }
+            foreach (ItemData item in consumables)
+            {
+                item.itemType = ItemType.Consumable;
+                dict.Add(item.id, item);
+            }
             return dict;
         }
     }

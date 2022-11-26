@@ -20,6 +20,7 @@ enum MsgId {
   C_ENTER_GAME = 13;
   C_CREATE_PLAYER = 14;
   S_CREATE_PLAYER = 15;
+  S_ITEM_LIST = 16;
 }
 enum CreatureState{
     IDLE = 0;
@@ -53,6 +54,31 @@ enum PlayerServerState{
 	SERVER_STATE_LOGIN = 0;
 	SERVER_STATE_LOBBY = 1;
 	SERVER_STATE_GAME = 2;
+}
+
+// 아이템 종류
+enum ItemType{
+	ITEM_TYPE_WEAPON = 0;
+	ITEM_TYPE_ARMOR = 1;
+	ITEM_TYPE_CONSUMABLE = 2;
+}
+// 무기 종류
+enum WeaponType{
+	WEAPON_TYPE_NONE = 0;
+	WEAPON_TYPE_SWORD = 1;
+	WEAPON_TYPE_BOW = 2;
+}
+// 방어구 종류
+enum ArmorType{
+	ARMOR_TYPE_NONE = 0;
+	ARMOR_TYPE_HELMET = 1;
+	ARMOR_TYPE_ARMOR = 2;
+	ARMOR_TYPE_BOOTS = 3;
+}
+// 소비재 종류
+enum ConsumableType{
+	CONSUMABLE_TYPE_NONE = 0;
+	CONSUMABLE_TYPE_POTION = 1;
 }
 
 message S_EnterGame {
@@ -125,6 +151,10 @@ message C_EnterGame{
 	string name = 1; // 플레이어의 이름
 }
 
+message S_ItemList{
+	repeated ItemInfo items = 1;
+}
+
 // 로비에서만 보이는 플레이어의 정보
 message LobbyPlayerInfo{
 	int32 playerDbId = 1;
@@ -157,4 +187,11 @@ message StatInfo{
 
 message SkillInfo{
 	int32 skillId = 1;
+}
+
+message ItemInfo{
+	int32 itemDbId = 1;
+	int32 templateId = 2;
+	int32 count = 3;
+	int32 slot = 4;
 }
