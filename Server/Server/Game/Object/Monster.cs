@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf.Protocol;
 using Server.Data;
+using Server.Data.DB;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -19,7 +20,7 @@ namespace Server.Game
             TemplateId = templateId;
 
             MonsterData monsterData = null;
-            DataManager.MonsterDict.TryGetValue(templateId, out monsterData);
+            DataManager.MonsterDict.TryGetValue(TemplateId, out monsterData);
 
             Stat.MergeFrom(monsterData.stat);
             Stat.Hp = monsterData.stat.MaxHp;
@@ -209,7 +210,18 @@ namespace Server.Game
         {
             base.OnDead(attacker);
 
-            // TODO : 아이템 생성
+            // 플레이어가 죽였을 때만 생성
+            GameObject owner = attacker.GetOnwer();
+            if(owner.ObjectType == GameObjectType.Player)
+            {
+                RewardData rewardData = GetRandomReward();
+                if(rewardData != null)
+                {
+                    Player player = (Player)owner;
+
+                    DbTransaction.RewardPlayer(player, rewardData, Room);
+                }
+            }
         }
 
         // 랜덤으로 하나의 아이템 보상
@@ -226,7 +238,7 @@ namespace Server.Game
             {
                 // 확률의 합이 rand를 넘기는 순간 그 아이템 반환
                 sum += rewardData.probability;
-                if(sum <= rand)
+                if(rand <= sum)
                 {
                     return rewardData;
                 }

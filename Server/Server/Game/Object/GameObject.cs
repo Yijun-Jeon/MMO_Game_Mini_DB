@@ -158,5 +158,10 @@ namespace Server.Game
             // Room.EnterGame(this);
             room.EnterGame(this);
         }
+
+        public virtual GameObject GetOnwer()
+        {
+            return this;
+        }
     }
 }

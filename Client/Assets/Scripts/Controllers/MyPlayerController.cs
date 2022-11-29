@@ -16,6 +16,8 @@ public class MyPlayerController : PlayerController
     
     protected override void UpdateController()
     {
+        GetUIKeyInput();
+
         switch (State)
         {
             case CreatureState.Idle:
@@ -29,7 +31,26 @@ public class MyPlayerController : PlayerController
         base.UpdateController();
     }
 
-    // Ű���� �Է�
+    void GetUIKeyInput()
+    {
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+            UI_Inventory invenUI = gameSceneUI.InvenUI;
+
+            // 인벤토리가 켜져 있음
+            if(invenUI.gameObject.activeSelf)
+            {
+                invenUI.gameObject.SetActive(false);
+            }
+            // 인벤토리가 꺼져 있음
+            else
+            {
+                invenUI.gameObject.SetActive(true);
+                invenUI.RefreshUI();
+            }
+        }
+    }
     void GetDirInput()
     {
         _moveKeyPressed = true;
@@ -62,14 +83,12 @@ public class MyPlayerController : PlayerController
 
     protected override void UpdateIdle()
     {
-        // �̵� ���·� ���� Ȯ��
         if (_moveKeyPressed)
         {
             State = CreatureState.Moving;
             return;
         }
 
-        // �ڷ�ƾ���� ��ų Ű ���� ��Ÿ ���� ����
         if(_coSkillCoolTime == null && Input.GetKey(KeyCode.Space))
         {
             C_Skill skill = new C_Skill() { Info = new SkillInfo() };

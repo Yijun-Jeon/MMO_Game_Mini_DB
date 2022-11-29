@@ -21,6 +21,7 @@ enum MsgId {
   C_CREATE_PLAYER = 14;
   S_CREATE_PLAYER = 15;
   S_ITEM_LIST = 16;
+  S_ADD_ITEM = 17;
 }
 enum CreatureState{
     IDLE = 0;
@@ -152,6 +153,10 @@ message C_EnterGame{
 }
 
 message S_ItemList{
+	repeated ItemInfo items = 1;
+}
+
+message S_AddItem{
 	repeated ItemInfo items = 1;
 }
 

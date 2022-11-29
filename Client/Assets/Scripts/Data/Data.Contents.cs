@@ -117,7 +117,7 @@ namespace Data
         public StatInfo stat;
         // 클라에서 들고 있으면 안되는 정보
         // public List<RewardData> rewards;
-        public string prefabpath;
+        public string prefabPath;
     }
 
     [Serializable]
