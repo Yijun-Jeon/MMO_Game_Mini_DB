@@ -1,0 +1,43 @@
+{
+  "monsters": [
+    {
+      "id": "1",
+      "name": "도플갱어",
+      "stat": {
+        "level": "1",
+        "maxHp": "200",
+        "attack": "20",
+        "speed": "10.0",
+        "totalExp": "10"
+      },
+      // 보상목록
+      "rewards": [
+        {
+          "probability": "10",
+          "itemId": "1",
+          "count": "1"
+        },
+        {
+          "probability": "10",
+          "itemId": "2",
+          "count": "1"
+        },
+        {
+          "probability": "10",
+          "itemId": "100",
+          "count": "1"
+        },
+        {
+          "probability": "10",
+          "itemId": "101",
+          "count": "1"
+        },
+        {
+          "probability": "10",
+          "itemId": "200",
+          "count": "5"
+        }
+      ]
+    }
+  ]
+} 

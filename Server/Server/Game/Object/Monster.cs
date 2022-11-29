@@ -8,16 +8,21 @@ namespace Server.Game
 {
     public class Monster : GameObject
     {
+        public int TemplateId { get; private set; }
         public Monster()
         {
             ObjectType = GameObjectType.Monster;
+        }
 
-            // TEMP
-            Stat.Level = 1;
-            Stat.Hp = 100;
-            Stat.MaxHp = 100;
-            Stat.Speed = 5.0f;
+        public void Init(int templateId)
+        {
+            TemplateId = templateId;
 
+            MonsterData monsterData = null;
+            DataManager.MonsterDict.TryGetValue(templateId, out monsterData);
+
+            Stat.MergeFrom(monsterData.stat);
+            Stat.Hp = monsterData.stat.MaxHp;
             State = CreatureState.Idle;
         }
 
@@ -198,6 +203,35 @@ namespace Server.Game
         protected virtual void UpdateDead()
         {
 
+        }
+
+        public override void OnDead(GameObject attacker)
+        {
+            base.OnDead(attacker);
+
+            // TODO : 아이템 생성
+        }
+
+        // 랜덤으로 하나의 아이템 보상
+        RewardData GetRandomReward()
+        {
+            MonsterData monsterData = null;
+            DataManager.MonsterDict.TryGetValue(TemplateId, out monsterData);
+
+            // 0~100
+            int rand = new Random().Next(0, 101);
+
+            int sum = 0;
+            foreach(RewardData rewardData in monsterData.rewards)
+            {
+                // 확률의 합이 rand를 넘기는 순간 그 아이템 반환
+                sum += rewardData.probability;
+                if(sum <= rand)
+                {
+                    return rewardData;
+                }
+            }
+            return null;
         }
     }
 }

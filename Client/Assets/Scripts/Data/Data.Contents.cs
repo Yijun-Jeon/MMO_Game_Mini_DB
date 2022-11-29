@@ -106,4 +106,34 @@ namespace Data
         }
     }
     #endregion
+
+    #region Monster
+    [Serializable]
+    public class MonsterData
+    {
+        public int id;
+        public string name;
+        // totalExp는 처치 시 주는 경험치
+        public StatInfo stat;
+        // 클라에서 들고 있으면 안되는 정보
+        // public List<RewardData> rewards;
+        public string prefabpath;
+    }
+
+    [Serializable]
+    public class MonsterLoader : ILoader<int, MonsterData>
+    {
+        public List<MonsterData> monsters = new List<MonsterData>();
+
+        public Dictionary<int, MonsterData> MakeDict()
+        {
+            Dictionary<int, MonsterData> dict = new Dictionary<int, MonsterData>();
+            foreach (MonsterData monster in monsters)
+            {
+                dict.Add(monster.id, monster);
+            }
+            return dict;
+        }
+    }
+    #endregion
 }
