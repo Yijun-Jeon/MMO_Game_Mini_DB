@@ -22,10 +22,14 @@ public class UI_Inventory : UI_Base
             Items.Add(item);
         }
 
+        RefreshUI();
     }
 
     public void RefreshUI()
     {
+        if (Items.Count == 0)
+            return;
+
         // 메모리에 있는 아이템 목록 들고옴
         List<Item> items = Managers.Inven.Items.Values.ToList();
         // Slot 넘버 순으로 정렬
@@ -36,7 +40,7 @@ public class UI_Inventory : UI_Base
             if (item.Slot < 0 || item.Slot >= 20)
                 continue;
 
-            Items[item.Slot].SetItem(item.TemplateId, item.Count);
+            Items[item.Slot].SetItem(item);
         }
     }
 }
