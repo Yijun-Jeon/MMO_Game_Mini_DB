@@ -22,6 +22,9 @@ enum MsgId {
   S_CREATE_PLAYER = 15;
   S_ITEM_LIST = 16;
   S_ADD_ITEM = 17;
+  C_EQUIP_ITEM = 18;
+  S_EQUIP_ITEM = 19;
+  S_CHANGE_STAT = 20;
 }
 enum CreatureState{
     IDLE = 0;
@@ -160,6 +163,20 @@ message S_AddItem{
 	repeated ItemInfo items = 1;
 }
 
+message C_EquipItem{
+	int32 itemDbId = 1;
+	bool equipped = 2;
+}
+
+message S_EquipItem{
+	int32 itemDbId = 1;
+	bool equipped = 2;
+}
+
+message S_ChangeStat{
+	StatInfo statInfo = 1;
+}
+
 // 로비에서만 보이는 플레이어의 정보
 message LobbyPlayerInfo{
 	int32 playerDbId = 1;
@@ -199,4 +216,5 @@ message ItemInfo{
 	int32 templateId = 2;
 	int32 count = 3;
 	int32 slot = 4;
+	bool equipped = 5;
 }
