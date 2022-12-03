@@ -166,11 +166,6 @@ class PacketHandler
     public static void S_ItemListHandler(PacketSession session, IMessage packet)
     {
         S_ItemList itemList = (S_ItemList)packet;
-
-        // UI 설정
-        //UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
-        //UI_Inventory invenUI = gameSceneUI.InvenUI;
-
         
         Managers.Inven.Clear();
         // 메모리상 아이템 정보 적용
@@ -180,9 +175,8 @@ class PacketHandler
             Managers.Inven.Add(item);
         }
 
-        // UI 에서 표시
-        //invenUI.gameObject.SetActive(true);
-        //invenUI.RefreshUI();
+        if (Managers.Object.MyPlayer != null)
+            Managers.Object.MyPlayer.RefreshAdditionalStat();
     }
 
     public static void S_AddItemHandler(PacketSession session, IMessage packet)
@@ -200,8 +194,11 @@ class PacketHandler
 
         // UI 설정
         UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
-        UI_Inventory invenUI = gameSceneUI.InvenUI;
-        invenUI.RefreshUI();
+        gameSceneUI.InvenUI.RefreshUI();
+        gameSceneUI.StatUI.RefreshUI();
+
+        if (Managers.Object.MyPlayer != null)
+            Managers.Object.MyPlayer.RefreshAdditionalStat();
     }
 
     public static void S_EquipItemHandler(PacketSession session, IMessage packet)
@@ -214,12 +211,16 @@ class PacketHandler
             return;
 
         item.Equipped = equipItemOk.Equipped;
+        
         Debug.Log("아이템을 착용 변경!");
 
         // UI 설정
         UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
-        UI_Inventory invenUI = gameSceneUI.InvenUI;
-        invenUI.RefreshUI();
+        gameSceneUI.InvenUI.RefreshUI();
+        gameSceneUI.StatUI.RefreshUI();
+
+        if (Managers.Object.MyPlayer != null)
+            Managers.Object.MyPlayer.RefreshAdditionalStat();
     }
 
     public static void S_ChangeStatHandler(PacketSession session, IMessage packet)

@@ -38,11 +38,6 @@ namespace Server.Game
             {
                 monster.Update();
             }
-            foreach(Projecttile projecttile in _projecttiles.Values)
-            {
-                projecttile.Update();
-            }
-
             Flush();
         }
 
@@ -58,6 +53,8 @@ namespace Server.Game
                 Player player = gameObject as Player;
                 _players.Add(gameObject.Id, player);
                 player.Room = this;
+
+                player.RefreshAdditionalStat();
 
                 // Map의 _players 갱신
                 Map.ApplyMove(player, new Vector2Int(player.CellPos.x, player.CellPos.y));
@@ -101,6 +98,8 @@ namespace Server.Game
                 Projecttile projecttile = gameObject as Projecttile;
                 _projecttiles.Add(gameObject.Id, projecttile);
                 projecttile.Room = this;
+
+                projecttile.Update();
             }
                
 

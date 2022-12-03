@@ -44,7 +44,7 @@ public class Item
 
     public Item(ItemType itemType)
     {
-        ItemType = ItemType;
+        ItemType = itemType;
     }
 
     public static Item MakeItem(ItemInfo itemInfo)

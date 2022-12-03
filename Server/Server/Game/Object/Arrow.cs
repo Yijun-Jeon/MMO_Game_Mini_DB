@@ -9,19 +9,13 @@ namespace Server.Game
     {
         // 화살을 쏜 주인
         public GameObject Owner { get; set; }
-
-        long _nextMoveTick = 0;
         public override void Update()
         {
             if (Data == null || Data.projecttile == null || Owner == null || Room == null)
                 return;
 
-            // 아직 시간이 덜 됨
-            if (_nextMoveTick >= Environment.TickCount64)
-                return;
-
-            long tick = (long)(1000 / Data.projecttile.speed);
-            _nextMoveTick = Environment.TickCount64 + tick;
+            int tick = (int)(1000 / Data.projecttile.speed);
+            Room.PushAfter(tick, Update);
 
             Vector2Int destPos = GetFrontCellPos();
             if(Room.Map.CanGo(destPos))
@@ -41,7 +35,7 @@ namespace Server.Game
                 {
                     // 피격 판정
                     // 화살 데미지 + 플레이어 공격력
-                    target.OnDamaged(this, Data.damage + Owner.Stat.Attack);
+                    target.OnDamaged(this, Data.damage + Owner.TotalAttack);
                 }
                 // 소멸
                 //Room.LeaveGame(Id);

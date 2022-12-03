@@ -62,9 +62,10 @@ enum PlayerServerState{
 
 // 아이템 종류
 enum ItemType{
-	ITEM_TYPE_WEAPON = 0;
-	ITEM_TYPE_ARMOR = 1;
-	ITEM_TYPE_CONSUMABLE = 2;
+	ITEM_TYPE_NONE = 0;
+	ITEM_TYPE_WEAPON = 1;
+	ITEM_TYPE_ARMOR = 2;
+	ITEM_TYPE_CONSUMABLE = 3;
 }
 // 무기 종류
 enum WeaponType{

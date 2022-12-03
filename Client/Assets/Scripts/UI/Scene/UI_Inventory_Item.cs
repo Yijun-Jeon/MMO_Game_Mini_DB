@@ -6,47 +6,68 @@ using UnityEngine.UI;
 
 public class UI_Inventory_Item : UI_Base
 {
-    [SerializeField]
-    Image _icon = null;
+	[SerializeField]
+	Image _icon = null;
 
-    [SerializeField]
-    Image _frame = null;
+	[SerializeField]
+	Image _frame = null;
 
-    public int ItemDbid { get; private set; }
-    public int TemplateId { get; private set; }
-    public int Count { get; private set; }
-    public bool Equipped { get; private set; }
+	public int ItemDbId { get; private set; }
+	public int TemplateId { get; private set; }
+	public int Count { get; private set; }
+	public bool Equipped { get; private set; }
 
-    public override void Init()
-    {
-        // 클릭 시 이벤트 처리 Bind
-        _icon.gameObject.BindEvent((e) =>
+	public override void Init()
+	{
+		_icon.gameObject.BindEvent((e) =>
+		{
+			Debug.Log("Click Item");
+
+			Data.ItemData itemData = null;
+			Managers.Data.ItemDict.TryGetValue(TemplateId, out itemData);
+			if (itemData == null)
+				return;
+
+			// TODO : C_USE_ITEM 아이템 사용 패킷
+			if (itemData.itemType == ItemType.Consumable)
+				return;
+
+			C_EquipItem equipPacket = new C_EquipItem();
+			equipPacket.ItemDbId = ItemDbId;
+			equipPacket.Equipped = !Equipped;
+
+			Managers.Network.Send(equipPacket);
+		});
+	}
+
+	public void SetItem(Item item)
+	{
+		// 빈 아이템 칸 처리
+		if(item == null)
         {
-            Debug.Log("Click Item");
+			ItemDbId = 0;
+			TemplateId = 0;
+			Count = 0;
+			Equipped = false;
 
-            C_EquipItem equipPacket = new C_EquipItem();
-            equipPacket.ItemDbId = ItemDbid;
-            // 착용 <-> 미착용
-            equipPacket.Equipped = !Equipped;
+			_icon.gameObject.SetActive(false);
+			_frame.gameObject.SetActive(false);
+        }
+		else
+        {
+			ItemDbId = item.ItemDbId;
+			TemplateId = item.TemplateId;
+			Count = item.Count;
+			Equipped = item.Equipped;
 
-            Managers.Network.Send(equipPacket);
-        });
-    }
+			Data.ItemData itemData = null;
+			Managers.Data.ItemDict.TryGetValue(TemplateId, out itemData);
 
-    // 이미지를 해당 아이템 이미지로 변경
-    public void SetItem(Item item)
-    {
-        ItemDbid = item.ItemDbId;
-        TemplateId = item.TemplateId;
-        Count = item.Count;
-        Equipped = item.Equipped;
+			Sprite icon = Managers.Resource.Load<Sprite>(itemData.iconPath);
+			_icon.sprite = icon;
 
-        Data.ItemData itemData = null;
-        Managers.Data.ItemDict.TryGetValue(TemplateId, out itemData);
-
-        Sprite icon = Managers.Resource.Load<Sprite>(itemData.iconPath);
-        _icon.sprite = icon;
-
-        _frame.gameObject.SetActive(Equipped);
-    }
+			_icon.gameObject.SetActive(true);
+			_frame.gameObject.SetActive(Equipped);
+		}	
+	}
 }

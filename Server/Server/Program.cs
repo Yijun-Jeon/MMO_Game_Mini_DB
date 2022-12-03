@@ -39,7 +39,7 @@ namespace Server
         }
 
 		// DB 새로 생성 - 시간이 좀 걸림
-		static void InitializeDB(bool forceReset = false)
+		static void InitializeDB(bool forceReset = true)
 		{
 			using AppDbContext db = new AppDbContext();
 			{
@@ -62,7 +62,7 @@ namespace Server
 			DataManager.LoadData();
 
 			// DB
-			InitializeDB(forceReset: false);
+			InitializeDB(forceReset: true);
 
 			// 게임룸 생성
 			GameRoom room = RoomManager.Instance.Add(1);
