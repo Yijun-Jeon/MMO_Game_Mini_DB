@@ -4,10 +4,11 @@ using System.Text;
 
 namespace Server.Game
 {
-    public interface IJob
+    public abstract class IJob
     {
         // 실행
-        void Execute();
+        public abstract void Execute();
+        public bool Cancel { get; set; }
     }
 
     // 인자가 없는 Job
@@ -19,9 +20,10 @@ namespace Server.Game
         {
             _action = action;
         }
-        public void Execute()
+        public override void Execute()
         {
-            _action.Invoke();
+            if(Cancel != false)
+                _action.Invoke();
         }
     }
 
@@ -36,9 +38,10 @@ namespace Server.Game
             _action = action;
             _t1 = t1;
         }
-        public void Execute()
+        public override void Execute()
         {
-            _action.Invoke(_t1);
+            if (Cancel != false)
+                _action.Invoke(_t1);
         }
     }
 
@@ -55,9 +58,10 @@ namespace Server.Game
             _t1 = t1;
             _t2 = t2;
         }
-        public void Execute()
+        public override void Execute()
         {
-            _action.Invoke(_t1,_t2);
+            if (Cancel != false)
+                _action.Invoke(_t1,_t2);
         }
     }
 
@@ -76,9 +80,10 @@ namespace Server.Game
             _t2 = t2;
             _t3 = t3;
         }
-        public void Execute()
+        public override void Execute()
         {
-            _action.Invoke(_t1, _t2, _t3);
+            if (Cancel != false)
+                _action.Invoke(_t1, _t2, _t3);
         }
     }
 }
