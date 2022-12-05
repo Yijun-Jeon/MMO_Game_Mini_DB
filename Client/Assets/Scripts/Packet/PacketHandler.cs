@@ -141,7 +141,6 @@ class PacketHandler
             enterGamePacket.Name = info.Name;
             Managers.Network.Send(enterGamePacket);
         }
-
     }
 
     public static void S_CreatePlayerHandler(PacketSession session, IMessage packet)

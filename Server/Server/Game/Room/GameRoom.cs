@@ -10,7 +10,6 @@ namespace Server.Game
 {
     public partial class GameRoom : JobSerializer
     {
-        object _lock = new object();
         public int RoomId { get; set; }
 
         Dictionary<int,Player> _players = new Dictionary<int,Player>();
@@ -27,8 +26,8 @@ namespace Server.Game
             Monster monster = ObjectManager.Instance.Add<Monster>();
             monster.Init(1);
             monster.CellPos = new Vector2Int(5, 5);
-            //EnterGame(monster);
-            Push(EnterGame, monster);
+            EnterGame(monster);
+            //Push(EnterGame, monster);
         }
 
         // 누군가가 주기적으로 호출해줘야함

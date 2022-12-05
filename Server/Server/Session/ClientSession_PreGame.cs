@@ -166,7 +166,7 @@ namespace Server
 			if (playerInfo == null)
 				return;
 
-			S_ItemList itemListPacket = new S_ItemList();
+			
 			// 기존 입장 & MyPlayer setting 부분
 			MyPlayer = ObjectManager.Instance.Add<Player>();
 			{
@@ -178,6 +178,8 @@ namespace Server
 				MyPlayer.Info.PosInfo.PosY = 0;
 				MyPlayer.Stat.MergeFrom(playerInfo.StatInfo);
 				MyPlayer.Session = this;
+
+				S_ItemList itemListPacket = new S_ItemList();
 
 				// 아이템 목록을 갖고 옴
 				using (AppDbContext db = new AppDbContext())
@@ -207,9 +209,15 @@ namespace Server
 
 			ServerState = PlayerServerState.ServerStateGame;
 
-			// 1번방에 플레이어 입장
-			GameRoom room = RoomManager.Instance.Find(1);
-			room.Push(room.EnterGame, MyPlayer);
+			// GameLogic을 담당하는 Thread에게 일감을 넘김
+			GameLogic.Instance.Push(() =>
+			{
+				// 1번방에 플레이어 입장
+				GameRoom room = GameLogic.Instance.Find(1);
+				room.Push(room.EnterGame, MyPlayer);
+			});
+
+            Console.WriteLine("EnterGame End");
 		}
     }
 }

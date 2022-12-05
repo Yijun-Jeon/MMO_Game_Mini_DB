@@ -22,7 +22,7 @@ namespace Server.Game
         }
         public override void Execute()
         {
-            if(Cancel != false)
+            if(Cancel == false)
                 _action.Invoke();
         }
     }
@@ -40,7 +40,7 @@ namespace Server.Game
         }
         public override void Execute()
         {
-            if (Cancel != false)
+            if (Cancel == false)
                 _action.Invoke(_t1);
         }
     }
@@ -60,7 +60,7 @@ namespace Server.Game
         }
         public override void Execute()
         {
-            if (Cancel != false)
+            if (Cancel == false)
                 _action.Invoke(_t1,_t2);
         }
     }
@@ -82,7 +82,7 @@ namespace Server.Game
         }
         public override void Execute()
         {
-            if (Cancel != false)
+            if (Cancel == false)
                 _action.Invoke(_t1, _t2, _t3);
         }
     }

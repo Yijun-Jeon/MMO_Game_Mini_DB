@@ -21,7 +21,11 @@ namespace Server
 		public Player MyPlayer { get; set; }
 		public int SessionId { get; set; }
 
+		object _lock = new object();
+		List<ArraySegment<byte>> _reserveQueue = new List<ArraySegment<byte>>();
+
         #region Network
+		// Send할 목록을 예약만 함
         public void Send(IMessage packet)
 		{
 			// packet id 추출
@@ -34,7 +38,29 @@ namespace Server
             Array.Copy(BitConverter.GetBytes((ushort)msgId), 0, sendBuffer, 2, sizeof(ushort));
             Array.Copy(packet.ToByteArray(), 0, sendBuffer, 4, size);
 
-			Send(new ArraySegment<byte>(sendBuffer));
+			lock(_lock)
+            {
+				// 일단 예약만 하고 넘겨줌
+				_reserveQueue.Add(sendBuffer);
+			}
+			//Send(new ArraySegment<byte>(sendBuffer));
+        }
+
+		// 실제 Network IO 보내는 부분
+		public void FlushSend()
+        {
+			List<ArraySegment<byte>> sendList = null;
+			lock(_lock)
+            {
+				// 복사만 해주고 초기화함
+				if (_reserveQueue.Count == 0)
+					return;
+
+				sendList = _reserveQueue;
+				_reserveQueue = new List<ArraySegment<byte>>();
+            }
+
+			Send(sendList);
         }
 
         public override void OnConnected(EndPoint endPoint)
@@ -55,10 +81,12 @@ namespace Server
 
 		public override void OnDisconnected(EndPoint endPoint)
 		{
-			//RoomManager.Instance.Find(1).LeaveGame(MyPlayer.Info.ObjectId);
-			GameRoom room = RoomManager.Instance.Find(1);
-			room.Push(room.LeaveGame, MyPlayer.Info.ObjectId);
-
+			GameLogic.Instance.Push(() =>
+			{
+				GameRoom room = GameLogic.Instance.Find(1);
+				room.Push(room.LeaveGame, MyPlayer.Info.ObjectId);
+			});
+			
 			SessionManager.Instance.Remove(this);
 
 			Console.WriteLine($"OnDisconnected : {endPoint}");

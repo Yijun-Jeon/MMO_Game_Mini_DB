@@ -22,20 +22,49 @@ namespace Server
 {
 	class Program
 	{
+		// 1. GameRoom 방식의 간단한 동기화 <- OK
+		// 2. 더 넓은 영역 관리
+		// 3. 심리스 MMO
+
+		// 1. Recv (N개)     서빙
+		// 2. GameLogic (1)  요리사
+		// 3. Send (1개)     서빙
+		// 4. DB (1)         결제/장부
+
 		static Listener _listener = new Listener();
 
-		static List<System.Timers.Timer> _timers = new List<System.Timers.Timer>();
-		static void TickRoom(GameRoom room, int tick = 1000)
+		static void GameLogicTask()
         {
-			var timer = new System.Timers.Timer();
-			// 시간 간격
-			timer.Interval = tick;
-			// 실행 대상
-			timer.Elapsed += ((s, e) => { room.Update(); });
-			timer.AutoReset = true;
-			timer.Enabled = true;
+			while(true)
+            {
+				GameLogic.Instance.Update();
+				Thread.Sleep(0);
+            }
+        }
 
-			_timers.Add(timer);
+		static void DbTask()
+        {
+			while (true)
+			{
+				// 일단 무식하게 무한루프로 Flush
+				DbTransaction.Instance.Flush();
+				// 실행권을 잠시 넘겨줘서 CPU 낭비 방지
+				Thread.Sleep(0);
+			}
+		}
+
+		static void NetworkTask()
+        {
+			while(true)
+            {
+				List<ClientSession> sessions = SessionManager.Instance.GetSessions();
+
+				foreach (ClientSession session in sessions)
+				{
+					session.FlushSend();
+				}
+				Thread.Sleep(0);
+            }
         }
 
 		// DB 새로 생성 - 시간이 좀 걸림
@@ -62,12 +91,13 @@ namespace Server
 			DataManager.LoadData();
 
 			// DB
-			InitializeDB(forceReset: false);
+			InitializeDB(forceReset: true);
 
-			// 게임룸 생성
-			GameRoom room = RoomManager.Instance.Add(1);
-			// 자동 업데이트 실행
-			TickRoom(room, 50);
+			GameLogic.Instance.Push(() =>
+			{
+				// 게임룸 생성
+				GameLogic.Instance.Add(1);
+			});
 
 			// DNS (Domain Name System)
 			string host = Dns.GetHostName();
@@ -78,14 +108,21 @@ namespace Server
 			_listener.Init(endPoint, () => { return SessionManager.Instance.Generate(); });
 			Console.WriteLine("Listening...");
 
-            //FlushRoom();
-            //JobTimer.Instance.Push(FlushRoom);
-
-            while (true)
+            // GameLogicTask
+            {
+				// 쓰레드 풀링X -> 별도로 하나를 더 파줌
+				Task gameLogicTask = new Task(GameLogicTask, TaskCreationOptions.LongRunning);
+				gameLogicTask.Start();
+            }
+			// NetworkTask
 			{
-				// 일단 무식하게 무한루프로 Flush
-				DbTransaction.Instance.Flush();
+				// 쓰레드 풀링X -> 별도로 하나를 더 파줌
+				Task networkTask = new Task(NetworkTask, TaskCreationOptions.LongRunning);
+				networkTask.Start();
 			}
+
+			// DbTask
+			DbTask();
 		}
 	}
 }
