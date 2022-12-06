@@ -91,7 +91,7 @@ namespace Server
 			DataManager.LoadData();
 
 			// DB
-			InitializeDB(forceReset: true);
+			InitializeDB(forceReset: false);
 
 			GameLogic.Instance.Push(() =>
 			{
@@ -108,21 +108,22 @@ namespace Server
 			_listener.Init(endPoint, () => { return SessionManager.Instance.Generate(); });
 			Console.WriteLine("Listening...");
 
-            // GameLogicTask
-            {
-				// 쓰레드 풀링X -> 별도로 하나를 더 파줌
-				Task gameLogicTask = new Task(GameLogicTask, TaskCreationOptions.LongRunning);
-				gameLogicTask.Start();
+			// DbTask
+			{
+				Thread t = new Thread(DbTask);
+				t.Name = "DB";
+				t.Start();
             }
 			// NetworkTask
 			{
-				// 쓰레드 풀링X -> 별도로 하나를 더 파줌
-				Task networkTask = new Task(NetworkTask, TaskCreationOptions.LongRunning);
-				networkTask.Start();
+				Thread t = new Thread(NetworkTask);
+				t.Name = "Network Send";
+				t.Start();
 			}
 
-			// DbTask
-			DbTask();
+			// GameLogic
+			Thread.CurrentThread.Name = "GameLogic";
+			GameLogicTask();
 		}
 	}
 }
