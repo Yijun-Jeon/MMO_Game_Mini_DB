@@ -25,7 +25,7 @@ namespace Server.Game
                 S_Move movePacket = new S_Move();
                 movePacket.ObjectId = Id;
                 movePacket.PosInfo = PosInfo;
-                Room.Broadcast(movePacket);
+                Room.Broadcast(CellPos,movePacket);
             }
             // 충돌
             else

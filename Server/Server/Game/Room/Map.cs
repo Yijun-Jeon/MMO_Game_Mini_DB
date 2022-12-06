@@ -146,6 +146,22 @@ namespace Server.Game
                 int y = MaxY - dest.y;
                 _objects[y, x] = gameObject;
             }
+
+            // 이동 위치에 맞는 Zone 설정
+            Player p = gameObject as Player;
+            if(p != null)
+            {
+                Zone now = gameObject.Room.GetZone(p.CellPos);
+                Zone after = gameObject.Room.GetZone(dest);
+                if(now != after)
+                {
+                    if (now != null)
+                        now.Players.Remove(p);
+                    if (after != null)
+                        after.Players.Add(p);
+                }
+            }
+
             // 실제 좌표 변경
             posInfo.PosX = dest.x;
             posInfo.PosY = dest.y;

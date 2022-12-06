@@ -126,7 +126,7 @@ namespace Server.Game
             S_ChangeHp changePacket = new S_ChangeHp();
             changePacket.ObjectId = Id;
             changePacket.Hp = Stat.Hp;
-            Room.Broadcast(changePacket);
+            Room.Broadcast(CellPos,changePacket);
 
             if(Stat.Hp <= 0)
             {
@@ -143,7 +143,7 @@ namespace Server.Game
             diePacket.ObjectId = Id;
             // 본인일 수도 있음 - 낙사 등
             diePacket.AttackerId = attacker.Id;
-            Room.Broadcast(diePacket);
+            Room.Broadcast(CellPos,diePacket);
 
             GameRoom room = Room;
 
