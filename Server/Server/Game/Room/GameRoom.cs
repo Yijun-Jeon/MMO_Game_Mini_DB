@@ -11,6 +11,7 @@ namespace Server.Game
 {
     public partial class GameRoom : JobSerializer
     {
+        public const int VisionCells = 5;
         public int RoomId { get; set; }
 
         Dictionary<int,Player> _players = new Dictionary<int,Player>();
@@ -97,6 +98,8 @@ namespace Server.Game
                 // 해당 위치에 맞는 Zone에 플레이어 배치
                 GetZone(player.CellPos).Players.Add(player);
 
+                if (player.Hp == 0)
+                    player.OnDead(player);
 
                 // 본인한테 정보 전송
                 {
@@ -104,22 +107,7 @@ namespace Server.Game
                     enterPacket.Player = player.Info;
                     player.Session.Send(enterPacket);
 
-                    // 다른 유저들 정보
-                    S_Spawn spawnPacket = new S_Spawn();
-                    foreach (Player p in _players.Values)
-                    {
-                        if (player != p)
-                            spawnPacket.Objects.Add(p.Info);
-                    }
-
-                    foreach (Monster m in _monsters.Values)
-                        spawnPacket.Objects.Add(m.Info);
-
-
-                    foreach(Projecttile p in _projecttiles.Values)
-                        spawnPacket.Objects.Add(p.Info);
-
-                    player.Session.Send(spawnPacket);
+                    player.Vision.Update();
                 }
             }
             else if(type == GameObjectType.Monster)
@@ -128,6 +116,7 @@ namespace Server.Game
                 _monsters.Add(gameObject.Id, monster);
                 monster.Room = this;
 
+                GetZone(monster.CellPos).Monsters.Add(monster);
                 // Map의 _players 갱신
                 Map.ApplyMove(monster, new Vector2Int(monster.CellPos.x, monster.CellPos.y));
 
@@ -139,20 +128,9 @@ namespace Server.Game
                 _projecttiles.Add(gameObject.Id, projecttile);
                 projecttile.Room = this;
 
+                GetZone(projecttile.CellPos).Projecttiles.Add(projecttile);
                 projecttile.Update();
             }
-               
-
-            // 타인한테 정보 전송
-            {
-                S_Spawn spawnPacket = new S_Spawn();
-                spawnPacket.Objects.Add(gameObject.Info);
-                foreach(Player p in _players.Values)
-                {
-                    if (p.Id != gameObject.Id)
-                        p.Session.Send(spawnPacket);
-                }
-            } 
 
         }
 
@@ -185,6 +163,7 @@ namespace Server.Game
                 if (_monsters.Remove(objectId, out monster) == false)
                     return;
 
+                GetZone(monster.CellPos).Monsters.Remove(monster);
                 Map.ApplyLeave(monster);
                 monster.Room = null;
             }
@@ -194,18 +173,8 @@ namespace Server.Game
                 if (_projecttiles.Remove(objectId, out projecttile) == false)
                     return;
 
+                GetZone(projecttile.CellPos).Projecttiles.Remove(projecttile);
                 projecttile.Room = null;
-            }
-
-            // 타인한테 정보 전송
-            {
-                S_Despawn despawnPacket = new S_Despawn();
-                despawnPacket.ObjectIds.Add(objectId);
-                foreach(Player p in _players.Values)
-                {
-                    if (p.Id != objectId)
-                        p.Session.Send(despawnPacket);
-                }
             }
         }
 
@@ -223,28 +192,24 @@ namespace Server.Game
 
         public void Broadcast(Vector2Int pos,IMessage packet)
         {
-            /*foreach(Player p in _players.Values)
-            {
-                p.Session.Send(packet);
-            }*/
-
             List<Zone> zones = GetAdjacentZones(pos);
-            foreach(Zone zone in zones)
-            {
-                foreach(Player p in zone.Players)
-                {
-                    p.Session.Send(packet);
-                }
-            }
 
-            /*foreach(Player p in zones.SelectMany( z => z.Players))
+            foreach (Player p in zones.SelectMany(z => z.Players))
             {
+                int dx = pos.x - p.CellPos.x;
+                int dy = pos.y - p.CellPos.y;
+                // 시야각 밖에 위치
+                if (Math.Abs(dx) > GameRoom.VisionCells)
+                    continue;
+                if (Math.Abs(dy) > GameRoom.VisionCells)
+                    continue;
+
                 p.Session.Send(packet);
-            }*/
+            }
         }
 
         // 내 영역에 속하는 Zone 리스트
-        public List<Zone> GetAdjacentZones(Vector2Int cellPos, int cells = 5) // 반경
+        public List<Zone> GetAdjacentZones(Vector2Int cellPos, int cells = GameRoom.VisionCells) // 반경
         {
             HashSet<Zone> zones = new HashSet<Zone>();
 

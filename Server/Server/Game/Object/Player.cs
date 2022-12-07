@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Server.Data.DB;
 using Server.DB;
+using Server.Game.Room;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,6 +13,8 @@ namespace Server.Game
     {
         public int PlayerDbId { get; set; }
         public ClientSession Session { get; set; }
+        public VisionCube Vision { get; private set; }
+
         public Inventory Inven { get; private set; } = new Inventory();
 
         // 아이템 착용으로 인한 추가 스탯
@@ -25,6 +28,7 @@ namespace Server.Game
         public Player()
         {
             ObjectType = GameObjectType.Player;
+            Vision = new VisionCube(this);
         }
 
         public override void OnDamaged(GameObject attacker, int damage)

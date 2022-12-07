@@ -11,6 +11,10 @@ namespace Server.Game
 
         // Zone에 있는 플레이어들
         public HashSet<Player> Players { get; set; } = new HashSet<Player>();
+        // Zone에 있는 몬스터들
+        public HashSet<Monster> Monsters { get; set; } = new HashSet<Monster>();
+        // Zone에 있는 투사체들
+        public HashSet<Projecttile> Projecttiles { get; set; } = new HashSet<Projecttile>();
 
         public Zone(int y, int x)
         {

@@ -147,18 +147,48 @@ namespace Server.Game
                 _objects[y, x] = gameObject;
             }
 
+            GameObjectType type = ObjectManager.GetObjectTypeById(gameObject.Id);
             // 이동 위치에 맞는 Zone 설정
-            Player p = gameObject as Player;
-            if(p != null)
+            if (type == GameObjectType.Player)
             {
-                Zone now = gameObject.Room.GetZone(p.CellPos);
-                Zone after = gameObject.Room.GetZone(dest);
-                if(now != after)
+                Player player = (Player)gameObject;
+                if (player != null)
                 {
-                    if (now != null)
-                        now.Players.Remove(p);
-                    if (after != null)
-                        after.Players.Add(p);
+                    Zone now = gameObject.Room.GetZone(player.CellPos);
+                    Zone after = gameObject.Room.GetZone(dest);
+                    if (now != after)
+                    {
+                        now.Players.Remove(player);
+                        after.Players.Add(player);
+                    }
+                }
+            }
+            else if(type == GameObjectType.Monster)
+            {
+                Monster monster = (Monster)gameObject;
+                if (monster != null)
+                {
+                    Zone now = gameObject.Room.GetZone(monster.CellPos);
+                    Zone after = gameObject.Room.GetZone(dest);
+                    if (now != after)
+                    {
+                        now.Monsters.Remove(monster);
+                        after.Monsters.Add(monster);
+                    }
+                }
+            }
+            else if(type == GameObjectType.Projecttile)
+            {
+                Projecttile projecttile = (Projecttile)gameObject;
+                if (projecttile != null)
+                {
+                    Zone now = gameObject.Room.GetZone(projecttile.CellPos);
+                    Zone after = gameObject.Room.GetZone(dest);
+                    if (now != after)
+                    {
+                        now.Projecttiles.Remove(projecttile);
+                        after.Projecttiles.Add(projecttile);
+                    }
                 }
             }
 
