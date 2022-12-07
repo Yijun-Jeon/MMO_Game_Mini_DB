@@ -91,7 +91,7 @@ namespace Server.Game
                         arrow.Speed = skillData.projecttile.speed;
                         // 화살도 서버에서 관리하여 클라로 전송
                         //EnterGame(arrow);
-                        Push(EnterGame, arrow);
+                        Push(EnterGame, arrow,false);
                     }
                     break;
             }

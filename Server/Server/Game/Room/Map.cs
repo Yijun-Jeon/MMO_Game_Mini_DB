@@ -126,25 +126,32 @@ namespace Server.Game
             return _objects[y, x];
         }
 
-        public bool ApplyMove(GameObject gameObject, Vector2Int dest)
+        public bool ApplyMove(GameObject gameObject, Vector2Int dest, bool checkObjects = true, bool collision = true)
         {
-            // 오브젝트가 원래 있던 위치 비워줌
-            ApplyLeave(gameObject);
-
             if (gameObject.Room == null)
                 return false;
             if (gameObject.Room.Map != this)
                 return false;
 
             PositionInfo posInfo = gameObject.Info.PosInfo;
-            if (CanGo(dest, true) == false)
+            if (CanGo(dest, checkObjects) == false)
                 return false;
             
             // 목표 위치로 이전
+            if(collision) // 화살은 제외
             {
-                int x = dest.x - MinX;
-                int y = MaxY - dest.y;
-                _objects[y, x] = gameObject;
+                // 오브젝트가 원래 있던 위치 비워줌
+                {
+                    int x = posInfo.PosX - MinX;
+                    int y = MaxY - posInfo.PosY;
+                    if (_objects[y, x] == gameObject)
+                        _objects[y, x] = null;
+                }
+                {
+                    int x = dest.x - MinX;
+                    int y = MaxY - dest.y;
+                    _objects[y, x] = gameObject;
+                }
             }
 
             GameObjectType type = ObjectManager.GetObjectTypeById(gameObject.Id);
@@ -211,13 +218,16 @@ namespace Server.Game
             if (posInfo.PosY < MinX || posInfo.PosY > MaxX)
                 return false;
 
+            // Zone
+            Zone zone = gameObject.Room.GetZone(gameObject.CellPos);
+            zone.Remove(gameObject);
+
             // 오브젝트가 원래 있던 위치 비워줌
             {
                 int x = posInfo.PosX - MinX;
                 int y = MaxY - posInfo.PosY;
                 if (_objects[y, x] == gameObject)
                     _objects[y, x] = null;
-
             }
 
             return true;

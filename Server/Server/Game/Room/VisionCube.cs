@@ -26,10 +26,10 @@ namespace Server.Game.Room
             HashSet<GameObject> objects = new HashSet<GameObject>();
 
             // 현재 Zone을 특정
-            Vector2Int cellPos = Owner.CellPos;
-            List<Zone> zones = Owner.Room.GetAdjacentZones(cellPos);
+            List<Zone> zones = Owner.Room.GetAdjacentZones(Owner.CellPos);
 
-            foreach(Zone zone in zones)
+            Vector2Int cellPos = Owner.CellPos;
+            foreach (Zone zone in zones)
             {
                 foreach(Player player in zone.Players)
                 {
@@ -113,8 +113,8 @@ namespace Server.Game.Room
 
             PreviousObjects = currentObjects;
 
-            // 0.5초에 한번씩 검사
-            Owner.Room.PushAfter(500, Update);
+            // 0.1초에 한번씩 검사
+            Owner.Room.PushAfter(100, Update);
         }
     }
 }

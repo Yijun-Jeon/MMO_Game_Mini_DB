@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Google.Protobuf.Protocol;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -20,6 +21,24 @@ namespace Server.Game
         {
             IndexY = y;
             IndexX = x;
+        }
+
+        public void Remove(GameObject gameObject)
+        {
+            GameObjectType type = ObjectManager.GetObjectTypeById(gameObject.Id);
+
+            switch (type)
+            {
+                case GameObjectType.Player:
+                    Players.Remove((Player)gameObject);
+                    break;
+                case GameObjectType.Monster:
+                    Monsters.Remove((Monster)gameObject);
+                    break;
+                case GameObjectType.Projecttile:
+                    Projecttiles.Remove((Projecttile)gameObject);
+                    break;
+            }
         }
         
         // 조건에 맞는 한 플레이어 서치

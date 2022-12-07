@@ -154,13 +154,11 @@ namespace Server.Game
             Stat.Hp = Stat.MaxHp;
             PosInfo.State = CreatureState.Idle;
             PosInfo.MoveDir = MoveDir.Down;
-            PosInfo.PosX = 0;
-            PosInfo.PosY = 0;
 
             // 다시 입장시킴
             // LeaveGame시 Room이 null로 밀어지기 때문에 아래 방법 사용할 수 없음
             // Room.EnterGame(this);
-            room.EnterGame(this);
+            room.EnterGame(this, randomPos: true);
         }
 
         public virtual GameObject GetOnwer()

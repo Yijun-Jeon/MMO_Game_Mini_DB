@@ -156,7 +156,7 @@ namespace Server.Game
             if (_coolTick == 0)
             {
                 // 유효한 타겟인지
-                if (_target == null || _target.Room != Room || _target.Hp == 0)
+                if (_target == null || _target.Room != Room || _target.Hp < 0)
                 {
                     _target = null;
                     State = CreatureState.Moving;
