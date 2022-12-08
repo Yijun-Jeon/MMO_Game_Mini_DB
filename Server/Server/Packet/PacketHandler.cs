@@ -87,11 +87,16 @@ class PacketHandler
 		Player player = clientSession.MyPlayer;
 		if (player == null)
 			return;
-
 		GameRoom room = player.Room;
 		if (room == null)
 			return;
 
 		room.Push(room.HandleEquipItem, player, equipPacket);
+	}
+
+	public static void C_PongHandler(PacketSession session, IMessage packet)
+	{
+		ClientSession clientSession = (ClientSession)session;
+		clientSession.HandlePong();
 	}
 }

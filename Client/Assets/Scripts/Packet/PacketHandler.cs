@@ -115,6 +115,10 @@ class PacketHandler
         // 시스템 별로 유니크한 아이디 할당해줌
         // 로컬에서 같은 머신으로 테스트 할 때는 추가 조치 필요
         loginPacket.UniqueId = SystemInfo.deviceUniqueIdentifier;
+
+        // 2 Player 테스트
+        string path = Application.dataPath;
+        loginPacket.UniqueId = path.GetHashCode().ToString();
         Managers.Network.Send(loginPacket);
     }
 
@@ -227,5 +231,12 @@ class PacketHandler
         S_ChangeStat changeStat = (S_ChangeStat)packet;
 
         // TODO
+    }
+
+    public static void S_PingHandler(PacketSession session, IMessage packet)
+    {
+        C_Pong pongPacket = new C_Pong();
+        Debug.Log("[Server] PingCheck");
+        Managers.Network.Send(pongPacket);
     }
 }

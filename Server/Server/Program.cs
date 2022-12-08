@@ -91,7 +91,7 @@ namespace Server
 			DataManager.LoadData();
 
 			// DB
-			InitializeDB(forceReset: true);
+			InitializeDB(forceReset: false);
 
 			GameLogic.Instance.Push(() =>
 			{

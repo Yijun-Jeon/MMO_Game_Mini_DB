@@ -113,8 +113,7 @@ namespace Server.Game
                 return;
             }
 
-            // 플레이어나 몬스터는 충돌 무시
-            List<Vector2Int> path =  Room.Map.FindPath(CellPos, _target.CellPos,checkObject: false);
+            List<Vector2Int> path =  Room.Map.FindPath(CellPos, _target.CellPos,checkObject: true);
             if(path.Count < 2 || path.Count > _chaseCellDist)
             {
                 _target = null;

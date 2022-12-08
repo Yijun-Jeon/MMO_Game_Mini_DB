@@ -268,7 +268,7 @@ namespace Server.Game
         int[] _deltaX = new int[] { 0, 0, -1, 1 };
         int[] _cost = new int[] { 10, 10, 10, 10 };
 
-        public List<Vector2Int> FindPath(Vector2Int startCellPos, Vector2Int destCellPos, bool checkObject = false)
+        public List<Vector2Int> FindPath(Vector2Int startCellPos, Vector2Int destCellPos, bool checkObject = false, int maxDist = 10)
         {
             List<Pos> path = new List<Pos>();
 
@@ -334,6 +334,9 @@ namespace Server.Game
                 for (int i = 0; i < _deltaY.Length; i++)
                 {
                     Pos next = new Pos(node.Y + _deltaY[i], node.X + _deltaX[i]);
+                    // 너무 멀면 스킵
+                    if (Math.Abs(pos.Y - next.Y) + Math.Abs(pos.X - next.X) > maxDist)
+                        continue;
 
                     // 유효 범위를 벗어났으면 스킵
                     // 벽으로 막혀서 갈 수 없으면 스킵
@@ -381,17 +384,39 @@ namespace Server.Game
         {
             List<Vector2Int> cells = new List<Vector2Int>();
 
-            Pos pos = dest;
-
-            while (parent[pos] != pos)
+            // Player에게 갈 수 있는 길이 없는 경우
+            if(parent.ContainsKey(dest) == false)
             {
-                cells.Add(Pos2Cell(pos));
-                pos = parent[pos];
-            }
-            cells.Add(Pos2Cell(pos));
-            cells.Reverse();
+                // 갈 수 있는 곳 중 그나마 플레이어에게 가장 가까운 곳으로 이동
+                Pos best = new Pos();
+                int bestDist = Int32.MaxValue;
 
-            return cells;
+                foreach(Pos pos in parent.Keys)
+                {
+                    int dist = Math.Abs(dest.X - pos.X) + Math.Abs(dest.Y - pos.Y);
+                    // 제일 우수한 후보를 뽑는다
+                    if(dist < bestDist)
+                    {
+                        best = pos;
+                        bestDist = dist;
+                    }
+                }
+                // 목적지를 우수한 후보로 변경
+                dest = best;
+            }
+            {
+                Pos pos = dest;
+
+                while (parent[pos] != pos)
+                {
+                    cells.Add(Pos2Cell(pos));
+                    pos = parent[pos];
+                }
+                cells.Add(Pos2Cell(pos));
+                cells.Reverse();
+
+                return cells;
+            }
         }
 
         Pos Cell2Pos(Vector2Int cell)
