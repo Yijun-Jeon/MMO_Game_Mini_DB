@@ -216,8 +216,6 @@ namespace Server
 				GameRoom room = GameLogic.Instance.Find(1);
 				room.Push(room.EnterGame, MyPlayer, true);
 			});
-
-            Console.WriteLine("EnterGame End");
 		}
     }
 }

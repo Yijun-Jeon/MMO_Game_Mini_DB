@@ -24,6 +24,12 @@ namespace Server
 		object _lock = new object();
 		List<ArraySegment<byte>> _reserveQueue = new List<ArraySegment<byte>>();
 
+		// 패킷 모아 보내기
+		// 보내려고 예약한 바이트
+		int _reservedSendBytes = 0;
+		// 마지막으로 보낸 시간
+		long _lastSendTick = 0;
+
 		// 클라에서 최근 마지막으로 응답을 준 시간
 		long _pingpongTick = 0;
 		public void Ping()
@@ -70,16 +76,26 @@ namespace Server
             {
 				// 일단 예약만 하고 넘겨줌
 				_reserveQueue.Add(sendBuffer);
+				_reservedSendBytes += sendBuffer.Length;
 			}
 			//Send(new ArraySegment<byte>(sendBuffer));
         }
-
+		
 		// 실제 Network IO 보내는 부분
 		public void FlushSend()
         {
 			List<ArraySegment<byte>> sendList = null;
 			lock(_lock)
             {
+				// 0.1초가 지났거나, 패킷이 1만 바이트 이상 모였을 때만 전송
+				long delta = (System.Environment.TickCount64 - _lastSendTick);
+				if (delta < 100 && _reservedSendBytes < 10000)
+					return;
+
+				// 패킷 모아 보내기
+				_reservedSendBytes = 0;
+				_lastSendTick = System.Environment.TickCount64;
+
 				// 복사만 해주고 초기화함
 				if (_reserveQueue.Count == 0)
 					return;
@@ -93,7 +109,7 @@ namespace Server
 
         public override void OnConnected(EndPoint endPoint)
 		{
-			Console.WriteLine($"OnConnected : {endPoint}");
+			//Console.WriteLine($"OnConnected : {endPoint}");
 
             // 클라에게 연결 됐다고 알려줌
             {
@@ -121,8 +137,6 @@ namespace Server
 			});
 			
 			SessionManager.Instance.Remove(this);
-
-			Console.WriteLine($"OnDisconnected : {endPoint}");
 		}
 
 		public override void OnSend(int numOfBytes)
