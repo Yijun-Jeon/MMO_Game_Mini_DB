@@ -13,7 +13,7 @@ namespace DummyClient
 		static void Main(string[] args)
         {
 			// 서버 시작까지 잠시 기다림
-			Thread.Sleep(5000);
+			Thread.Sleep(10000);
 
 			// DNS (Domain Name System)
 			string host = Dns.GetHostName();
