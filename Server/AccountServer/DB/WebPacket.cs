@@ -39,5 +39,3 @@ public class LoginAccountPacketRes
     // 서버 리스트
     public List<ServerInfo> ServerList { get; set; } = new List<ServerInfo>();
 }
-
-

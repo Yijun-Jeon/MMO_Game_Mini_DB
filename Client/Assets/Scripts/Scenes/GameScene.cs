@@ -12,6 +12,10 @@ public class GameScene : BaseScene
 
         SceneType = Define.Scene.Game;
 
+        // TODO : 잠시 기생중
+        Managers.Web.BaseUrl = "https://localhost:5001/api";
+        WebPacket.SendCreateAccount("yijun", "1234");
+
         Managers.Map.LoadMap(1);
 
         // 빌드 화면 크기 설정
