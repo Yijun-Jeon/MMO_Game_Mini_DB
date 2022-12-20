@@ -70,7 +70,7 @@ namespace Server.Game
             }
 
             // TEMP
-            for(int i=0;i<500;i++)
+            for(int i=0;i<1;i++)
             {
                 Monster monster = ObjectManager.Instance.Add<Monster>();
                 monster.Init(1);
