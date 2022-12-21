@@ -17,6 +17,7 @@ using Server.Data.DB;
 using Server.DB;
 using Server.Game;
 using ServerCore;
+using SharedDB;
 
 namespace Server
 {
@@ -85,6 +86,49 @@ namespace Server
 			//db.Dispose(); // 사용 후 처리
 		}
 
+		// 서버의 정보를 갱신
+		public static string Name { get; } = "데포르쥬";
+		public static int Port { get; } = 7777;
+		public static string IpAddress { get; set; }
+
+		// 주기적으로 서버 정보 갱신
+		static void StartServerInfoTask()
+		{
+			var t = new System.Timers.Timer();
+			t.AutoReset = true;
+			t.Elapsed += new System.Timers.ElapsedEventHandler((s, e) =>
+			{
+				// 공유 DB에 자신의 서버 정보 갱신
+				using(SharedDbContext shared = new SharedDbContext())
+				{
+					ServerDb serverDb = shared.Servers.Where(s => s.Name == Program.Name).FirstOrDefault();
+					if(serverDb != null)
+					{
+						serverDb.IpAddress = IpAddress;
+						serverDb.Port = Port;
+						serverDb.BusyScore = SessionManager.Instance.GetBusyScore();
+						shared.SaveChangesEx();
+					}
+					else
+					{
+						serverDb = new ServerDb()
+						{
+							Name = Program.Name,
+							IpAddress = Program.IpAddress,
+							Port = Program.Port,
+							BusyScore = SessionManager.Instance.GetBusyScore(),
+						};
+						shared.Servers.Add(serverDb);
+						shared.SaveChangesEx();
+					}
+				}
+			});
+			// 10 초마다 실행
+			t.Interval = 10 * 1000;
+			t.Start();
+		}
+
+
 		static void Main(string[] args)
 		{
 			ConfigManager.LoadConfig();
@@ -105,11 +149,16 @@ namespace Server
 			IPAddress ipAddr = ipHost.AddressList[0];
 			IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);
 
+			IpAddress = ipAddr.ToString();
+
 			_listener.Init(endPoint, () => { return SessionManager.Instance.Generate(); });
 			Console.WriteLine("Listening...");
 
-			// DbTask
-			{
+			// SharedDb
+			StartServerInfoTask();
+
+            // DbTask
+            {
 				Thread t = new Thread(DbTask);
 				t.Name = "DB";
 				t.Start();

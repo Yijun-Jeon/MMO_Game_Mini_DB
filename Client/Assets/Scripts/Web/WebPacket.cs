@@ -25,9 +25,10 @@ public class LoginAccountPacketReq
 public class ServerInfo
 {
     public string Name;
-    public string Ip;
+    public string IpAddress;
+    public int Port;
     // 서버 혼잡 정도
-    public int CrowdedLevel;
+    public int BusyScore;
 }
 
 
@@ -35,6 +36,8 @@ public class ServerInfo
 public class LoginAccountPacketRes
 {
     public bool LoginOk;
+    public int AccountId;
+    public int Token;
     // 서버 리스트
     public List<ServerInfo> ServerList = new List<ServerInfo>();
 }
