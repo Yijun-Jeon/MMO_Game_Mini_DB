@@ -75,10 +75,12 @@ public class UI_LoginScene : UI_Scene
 
             if (res.LoginOk)
             {
-                // 로그인이 성공했으므로 Scene 변경
-                Managers.Scene.LoadScene(Define.Scene.Game);
-                // 게임 접속
-                Managers.Network.ConnectToGame();
+                // 계정 정보 저장
+                Managers.Network.AccountId = res.AccountId;
+                Managers.Network.Token = res.Token;
+
+                UI_SelectServerPopup popup = Managers.UI.ShowPopupUI<UI_SelectServerPopup>();
+                popup.SetServers(res.ServerList);
             }
         });
     }
