@@ -8,17 +8,24 @@
 * 서버 : .Net Core 3.1, C#
 
 ## 계정생성 & 로그인
-![](https://i.imgur.com/VozIXD2.gif)
+<img src="https://user-images.githubusercontent.com/89140546/209460831-009dbd04-7c46-4522-a27e-baea2cba4a13.gif" width="50%" height="50%">
 
-* 'Create new user' 버튼을 누르면 DB에 새로운 계정이 생성된다.
-* DB에 저장되있는 계정의 Id와 Password를 입력하고 '로그인' 버튼을 누르면 서버를 고를 수 있고 고른 서버의 주소로 입장하게 된다. 
+* `Create new user` 버튼을 누르면 DB에 새로운 계정이 생성된다.
+* DB에 저장되있는 계정의 Id와 Password를 입력하고 `로그인` 버튼을 누르면 서버를 고를 수 있고 고른 서버의 주소로 입장하게 된다. 
 
 ## 인게임
-<img src="https://velog.velcdn.com/images/gkqls813/post/b67a2849-efe8-4f3a-93a4-bbe33a5a0b56/image.gif" width="100%" height="100%">
+<img src="https://user-images.githubusercontent.com/89140546/209460949-6ae7a0b4-db5f-4d6d-b78e-f4db16a2b370.gif" width="50%" height="50%">
 
 * 플레이어와 몬스터들은 모두 재접속하거나 죽으면 랜덤 위치로 리스폰된다.
-* 스페이스바를 누르면 화살을 날릴 수 있으며 몬스터를 한 방에, 다른 플레이어는 여러 방에 죽일 수 있다.
-* 몬스터들은 A* 알고리즘을 통해 자동으로 플레이어를 찾아서 공격한다.
+* `스페이스바` 를 누르면 화살을 날릴 수 있으며 몬스터를 한 방에, 다른 플레이어는 여러 방에 죽일 수 있다.
+* 몬스터들은 `A* 알고리즘`을 통해 자동으로 플레이어를 찾아서 공격한다.
+
+<img src="https://user-images.githubusercontent.com/89140546/209460833-a899b7d3-3910-4e41-894a-ced634469362.gif" width="50%" height="50%">
+
+* `C` 를 누르면 플레이어의 아이템 착용 정보와 스탯 창을 볼 수 있다.
+  * 플레이어의 스탯은 레벨과 아이탬의 스탯과 연동된다.
+* `I` 를 누르면 플레이어가 보유한 아이템들이 있는 인벤토리창을 볼 수 있다.
+  * 아이템은 몬스터를 잡았을 때 랜덤 확률로 얻을 수 있다.
 
 ---
 
