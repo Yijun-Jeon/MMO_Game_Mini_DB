@@ -101,7 +101,7 @@ namespace Server
 				// 공유 DB에 자신의 서버 정보 갱신
 				using(SharedDbContext shared = new SharedDbContext())
 				{
-					ServerDb serverDb = shared.Servers.Where(s => s.Name == Program.Name).FirstOrDefault();
+					ServerDb serverDb = shared.Servers.Where(s => s.Name == Name).FirstOrDefault();
 					if(serverDb != null)
 					{
 						serverDb.IpAddress = IpAddress;
@@ -146,8 +146,8 @@ namespace Server
 			// DNS (Domain Name System)
 			string host = Dns.GetHostName();
 			IPHostEntry ipHost = Dns.GetHostEntry(host);
-			IPAddress ipAddr = ipHost.AddressList[0];
-			IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);
+			IPAddress ipAddr = ipHost.AddressList[1];
+			IPEndPoint endPoint = new IPEndPoint(ipAddr, Port);
 
 			IpAddress = ipAddr.ToString();
 
