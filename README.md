@@ -6,6 +6,7 @@
 
 * 클라이언트 : Unity 2021.3.13f, C#
 * 서버 : .Net Core 3.1, C#
+* DB : EFCore
 
 ## 계정생성 & 로그인
 <img src="https://user-images.githubusercontent.com/89140546/209460831-009dbd04-7c46-4522-a27e-baea2cba4a13.gif" width="50%" height="50%">
